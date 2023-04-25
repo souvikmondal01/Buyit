@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.HomeFragment"
+        android:label="HomeFragment">
+
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_shopCategoryFragment"
+            app:destination="@id/shopCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.CategoryFragment"
+        android:label="fragment_category"
+        tools:layout="@layout/fragment_category" >
+        <action
+            android:id="@+id/action_categoryFragment_to_shopByCategoryFragment"
+            app:destination="@id/shopByCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" />
+    <fragment
+        android:id="@+id/shopByCategoryFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.ShopByCategoryFragment"
+        android:label="fragment_shop_by_category"
+        tools:layout="@layout/fragment_shop_by_category" >
+        <action
+            android:id="@+id/action_shopByCategoryFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shopFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.ShopFragment"
+        android:label="fragment_shop"
+        tools:layout="@layout/fragment_shop" >
+        <action
+            android:id="@+id/action_shopFragment_to_shopCategoryFragment"
+            app:destination="@id/shopCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shopCategoryFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.ProductCategoryFragment"
+        android:label="ShopCategoryFragment" >
+        <action
+            android:id="@+id/action_shopCategoryFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+    </fragment>
+
+</navigation>
