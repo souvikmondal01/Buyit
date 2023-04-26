@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.buyit.buyit.databinding.ListProductChildBinding
+import com.buyit.buyit.home.models.Product
 
-class ProductChildAdapter(private val list: ArrayList<String>) :
+class ProductChildAdapter(private val list: ArrayList<Product>?) :
     RecyclerView.Adapter<ProductChildAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ListProductChildBinding) : RecyclerView.ViewHolder(binding.root)
@@ -17,9 +18,11 @@ class ProductChildAdapter(private val list: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = list[position]
+        val data = list?.get(position)
         holder.apply {
-            binding.tvProductName.text = data
+            if (data != null) {
+                binding.tvProductName.text = data.name
+            }
 
             itemView.setOnClickListener { }
         }
@@ -27,6 +30,6 @@ class ProductChildAdapter(private val list: ArrayList<String>) :
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return list!!.size
     }
 }

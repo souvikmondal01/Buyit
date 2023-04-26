@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.buyit.buyit.databinding.ListProductBinding
+import com.buyit.buyit.home.models.ProductCategory
 
 class ProductAdapter(
     val context: Context,
-    private val list: ArrayList<String>,
-    private val listChild: ArrayList<String>
+    private val list: ArrayList<ProductCategory>
 ) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     class ViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root)
@@ -22,10 +22,10 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = list[position]
-        val adapter = ProductChildAdapter(listChild)
+        val adapter = ProductChildAdapter(data.product)
         holder.apply {
             binding.apply {
-                tvProductCategory.text = data
+                tvProductCategory.text = data.category
                 recyclerView.setHasFixedSize(true)
                 recyclerView.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

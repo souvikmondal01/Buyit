@@ -1,17 +1,27 @@
 package com.buyit.buyit.home.repositories
 
+import com.buyit.buyit.home.models.Product
+import com.buyit.buyit.home.models.ProductCategory
 import com.buyit.buyit.home.models.Shop
 import com.buyit.buyit.start.models.Location
 import com.buyit.buyit.start.models.User
 import com.buyit.buyit.utils.CommonUtils.db
 import com.buyit.buyit.utils.Constant
+import com.buyit.buyit.utils.Constant.CATEGORY
 import com.buyit.buyit.utils.Constant.CLOSE
 import com.buyit.buyit.utils.Constant.DONE
+import com.buyit.buyit.utils.Constant.NAME
 import com.buyit.buyit.utils.Constant.OPEN
+import com.buyit.buyit.utils.Constant.PRICE
+import com.buyit.buyit.utils.Constant.PRODUCT
+import com.buyit.buyit.utils.Constant.QUANTITY
 import com.buyit.buyit.utils.Constant.SHOP
 import com.buyit.buyit.utils.Constant.SHOP_CATEGORY
 import com.buyit.buyit.utils.Constant.STATUS
 import com.buyit.buyit.utils.Constant.SUCCESS
+import com.buyit.buyit.utils.Constant.TOTAL_COUNT
+import com.buyit.buyit.utils.Constant.UNIT
+import com.buyit.buyit.utils.Constant.URL
 import com.buyit.buyit.utils.Constant.VERIFICATION_STATUS
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import kotlinx.coroutines.Dispatchers
@@ -72,6 +82,44 @@ class HomeRepositoryImp : HomeRepository {
                 val user = it?.toObject(User::class.java)
                 val location = user?.location
                 result.invoke(location)
+            }
+    }
+
+    override fun fetchProduct(shopId: String, result: (ArrayList<ProductCategory>) -> Unit) {
+        val list = ArrayList<ProductCategory>()
+        val dbRef = db.collection(SHOP).document(shopId).collection(PRODUCT)
+        dbRef.get()
+            .addOnSuccessListener {
+                for (i in it.documents) {
+                    val productList = arrayListOf<Product>()
+                    dbRef.document(i.id).collection(PRODUCT).get()
+                        .addOnSuccessListener { product ->
+                            list.add(
+                                ProductCategory(
+                                    i.id,
+                                    i[CATEGORY].toString(),
+                                    i[URL].toString(),
+                                    productList
+                                )
+                            )
+                            for (j in product) {
+                                productList.add(
+                                    Product(
+                                        j.id,
+                                        j[NAME].toString(),
+                                        j[PRICE].toString(),
+                                        j[QUANTITY].toString(),
+                                        j[TOTAL_COUNT].toString(),
+                                        j[UNIT].toString(),
+                                        j[URL].toString(),
+                                    )
+                                )
+                            }
+                            result.invoke(
+                                list
+                            )
+                        }
+                }
             }
     }
 

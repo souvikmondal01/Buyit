@@ -22,4 +22,15 @@ object Constant {
     const val SUCCESS = "success"
     const val SPF = "sharedPreferences"
     const val RC_SIGN_IN = 100
+    const val PRODUCT = "product"
+    const val PRODUCT_CATEGORY_ID = "productCategoryId"
+    const val PRODUCT_CATEGORY_NAME = "productCategoryName"
+    const val CATEGORY = "category"
+    const val NAME = "name"
+    const val PRICE = "price"
+    const val QUANTITY = "quantity"
+    const val TOTAL_COUNT = "totalCount"
+    const val UNIT = "unit"
+    const val URL = "url"
+
 }

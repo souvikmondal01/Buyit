@@ -1,5 +1,6 @@
 package com.buyit.buyit.home.repositories
 
+import com.buyit.buyit.home.models.ProductCategory
 import com.buyit.buyit.home.models.Shop
 import com.buyit.buyit.start.models.Location
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -17,5 +18,6 @@ interface HomeRepository {
     ): FirestoreRecyclerOptions<Shop>
 
     fun getLocation(id: String, result: (Location?) -> Unit)
+    fun fetchProduct(shopId: String, result: (ArrayList<ProductCategory>) -> Unit)
 
 }

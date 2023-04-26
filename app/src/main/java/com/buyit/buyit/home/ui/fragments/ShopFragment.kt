@@ -1,5 +1,6 @@
 package com.buyit.buyit.home.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +18,7 @@ import com.buyit.buyit.home.adapters.ProductAdapter
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
 import com.buyit.buyit.home.viewModels.HomeViewModel
 import com.buyit.buyit.home.viewModels.HomeViewModelFactory
+import com.buyit.buyit.utils.Constant.SHOP_ID
 import com.buyit.buyit.utils.Constant.SHOP_NAME
 import com.buyit.buyit.utils.Constant.SPF
 import com.buyit.buyit.utils.hide
@@ -47,6 +49,7 @@ class ShopFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.cvBackArrow.setOnClickListener {
@@ -61,21 +64,18 @@ class ShopFragment : Fragment() {
         val sharedPreferences =
             requireActivity().getSharedPreferences(SPF, Context.MODE_PRIVATE)
         val shopName = sharedPreferences.getString(SHOP_NAME, "")
+        val shopId = sharedPreferences.getString(SHOP_ID, "")
         binding.tvShopName.text = shopName
 
-        val list = ArrayList<String>()
-        val listChild = ArrayList<String>()
-        for (i in 1..24) {
-            list.add("Product Category $i")
-            listChild.add("Product $i")
+        viewModel.fetchProduct(shopId.toString())
+        viewModel.productList.observe(viewLifecycleOwner) { list ->
+            adapter = ProductAdapter(requireContext(), list)
+            binding.recyclerView.setHasFixedSize(true)
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(context)
+            binding.recyclerView.adapter = adapter
+            adapter.notifyDataSetChanged()
         }
-
-
-        adapter = ProductAdapter(requireContext(), list, listChild)
-        binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(context)
-        binding.recyclerView.adapter = adapter
 
     }
 

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.buyit.buyit.home.interfaces.HomeListener
+import com.buyit.buyit.home.models.ProductCategory
 import com.buyit.buyit.home.models.Shop
 import com.buyit.buyit.home.repositories.HomeRepository
 import com.buyit.buyit.start.models.Location
@@ -32,6 +33,9 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     var homeListener: HomeListener? = null
     var isFavourite = false
     val id = auth.currentUser!!.uid
+
+    private var _productList = MutableLiveData<ArrayList<ProductCategory>>()
+    val productList get() = _productList
 
     fun getShopList() {
         val options = repository.getShopList({
@@ -66,6 +70,9 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         homeListener?.onSearchClick()
     }
 
+    fun fetchProduct(shopId: String) = repository.fetchProduct(shopId) {
+        _productList.value = it
+    }
 
 }
 
