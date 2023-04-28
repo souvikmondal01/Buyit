@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.buyit.buyit.R
 import com.buyit.buyit.databinding.FragmentShopBinding
 import com.buyit.buyit.home.adapters.ProductAdapter
+import com.buyit.buyit.home.adapters.ProductAdapterListener
 import com.buyit.buyit.home.adapters.ProductChildAdapter
 import com.buyit.buyit.home.adapters.ProductListener
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
@@ -29,7 +30,7 @@ import com.buyit.buyit.utils.setStatusBarColor
 import com.buyit.buyit.utils.show
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class ShopFragment : Fragment(), ProductListener {
+class ShopFragment : Fragment(), ProductListener, ProductAdapterListener {
     private var _binding: FragmentShopBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: HomeViewModel
@@ -73,7 +74,7 @@ class ShopFragment : Fragment(), ProductListener {
 
         viewModel.fetchProduct(shopId.toString())
         viewModel.productList.observe(viewLifecycleOwner) { list ->
-            adapter = ProductAdapter(requireContext(), list, this)
+            adapter = ProductAdapter(requireContext(), list, this, this)
             binding.recyclerView.setHasFixedSize(true)
             binding.recyclerView.layoutManager =
                 LinearLayoutManager(context)
@@ -122,6 +123,10 @@ class ShopFragment : Fragment(), ProductListener {
                 }
             }
         }
+    }
+
+    override fun onViewAllClick() {
+        findNavController().navigate(R.id.action_shopFragment_to_productByCategoryFragment)
     }
 
 

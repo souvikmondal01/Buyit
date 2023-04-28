@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.buyit.buyit.R
 import com.buyit.buyit.databinding.FragmentProductCategoryBinding
 import com.buyit.buyit.home.adapters.ProductCategoryAdapter
+import com.buyit.buyit.home.adapters.ProductCategoryListener
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
 import com.buyit.buyit.home.viewModels.HomeViewModel
 import com.buyit.buyit.home.viewModels.HomeViewModelFactory
@@ -22,7 +24,7 @@ import com.buyit.buyit.utils.Constant.SPF
 import com.buyit.buyit.utils.hide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class ProductCategoryFragment : Fragment() {
+class ProductCategoryFragment : Fragment(), ProductCategoryListener {
     private var _binding: FragmentProductCategoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ProductCategoryAdapter
@@ -61,7 +63,7 @@ class ProductCategoryFragment : Fragment() {
 
         viewModel.fetchProductCategory(shopId.toString())
         viewModel.productCategoryList.observe(viewLifecycleOwner) { list ->
-            adapter = ProductCategoryAdapter(list)
+            adapter = ProductCategoryAdapter(list, this)
             binding.recyclerView.setHasFixedSize(true)
             binding.recyclerView.layoutManager = GridLayoutManager(context, 3)
             binding.recyclerView.adapter = adapter
@@ -73,6 +75,10 @@ class ProductCategoryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCategoryClick() {
+        findNavController().navigate(R.id.action_shopCategoryFragment_to_productByCategoryFragment)
     }
 
 }

@@ -10,7 +10,8 @@ import com.buyit.buyit.home.models.ProductCategory
 
 class ProductAdapter(
     val context: Context,
-    private val list: ArrayList<ProductCategory>, val listener2: ProductListener
+    private val list: ArrayList<ProductCategory>, private val listener2: ProductListener,
+    private val listener3: ProductAdapterListener
 ) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>(), ProductListener {
     class ViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root)
@@ -33,6 +34,10 @@ class ProductAdapter(
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 recyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
+
+                btnViewAll.setOnClickListener {
+                    listener3.onViewAllClick()
+                }
             }
         }
 
@@ -53,4 +58,8 @@ class ProductAdapter(
     override fun onMinusClick(holder: ProductChildAdapter.ViewHolder) {
         listener2.onMinusClick(holder)
     }
+}
+
+interface ProductAdapterListener {
+    fun onViewAllClick()
 }

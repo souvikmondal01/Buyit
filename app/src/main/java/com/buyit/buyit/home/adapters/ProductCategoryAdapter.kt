@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.buyit.buyit.databinding.ListProductCategoryBinding
 import com.buyit.buyit.home.models.ProductCategory
 
-class ProductCategoryAdapter(val list: ArrayList<ProductCategory>) :
+class ProductCategoryAdapter(
+    val list: ArrayList<ProductCategory>,
+    val listener: ProductCategoryListener
+) :
     RecyclerView.Adapter<ProductCategoryAdapter.ViewHolder>() {
     class ViewHolder(val binding: ListProductCategoryBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -22,8 +25,11 @@ class ProductCategoryAdapter(val list: ArrayList<ProductCategory>) :
         holder.apply {
             binding.apply {
                 tvProductCategory.text = data.category
+
             }
-            itemView.setOnClickListener { }
+            itemView.setOnClickListener {
+                listener.onCategoryClick()
+            }
         }
     }
 
@@ -31,4 +37,8 @@ class ProductCategoryAdapter(val list: ArrayList<ProductCategory>) :
         return list.size
     }
 
+}
+
+interface ProductCategoryListener {
+    fun onCategoryClick()
 }

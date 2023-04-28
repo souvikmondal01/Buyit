@@ -58,6 +58,9 @@
         <action
             android:id="@+id/action_shopFragment_to_shopCategoryFragment"
             app:destination="@id/shopCategoryFragment" />
+        <action
+            android:id="@+id/action_shopFragment_to_productByCategoryFragment"
+            app:destination="@id/productByCategoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/shopCategoryFragment"
@@ -66,6 +69,14 @@
         <action
             android:id="@+id/action_shopCategoryFragment_to_shopFragment"
             app:destination="@id/shopFragment" />
+        <action
+            android:id="@+id/action_shopCategoryFragment_to_productByCategoryFragment"
+            app:destination="@id/productByCategoryFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/productByCategoryFragment"
+        android:name="com.buyit.buyit.home.ui.fragments.ProductByCategoryFragment"
+        android:label="fragment_product_by_category"
+        tools:layout="@layout/fragment_product_by_category" />
 
 </navigation>
