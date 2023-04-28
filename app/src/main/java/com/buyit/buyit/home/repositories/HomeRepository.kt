@@ -19,5 +19,6 @@ interface HomeRepository {
 
     fun getLocation(id: String, result: (Location?) -> Unit)
     fun fetchProduct(shopId: String, result: (ArrayList<ProductCategory>) -> Unit)
+    fun fetchProductCategory(shopId: String, result: (ArrayList<ProductCategory>) -> Unit)
 
 }

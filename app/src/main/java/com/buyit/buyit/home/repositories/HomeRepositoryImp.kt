@@ -20,7 +20,6 @@ import com.buyit.buyit.utils.Constant.SHOP_CATEGORY
 import com.buyit.buyit.utils.Constant.STATUS
 import com.buyit.buyit.utils.Constant.SUCCESS
 import com.buyit.buyit.utils.Constant.TOTAL_COUNT
-import com.buyit.buyit.utils.Constant.UNIT
 import com.buyit.buyit.utils.Constant.URL
 import com.buyit.buyit.utils.Constant.VERIFICATION_STATUS
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -109,8 +108,8 @@ class HomeRepositoryImp : HomeRepository {
                                         j[NAME].toString(),
                                         j[PRICE].toString(),
                                         j[QUANTITY].toString(),
+                                        j[Constant.UNIT].toString(),
                                         j[TOTAL_COUNT].toString(),
-                                        j[UNIT].toString(),
                                         j[URL].toString(),
                                     )
                                 )
@@ -121,6 +120,25 @@ class HomeRepositoryImp : HomeRepository {
                         }
                 }
             }
+    }
+
+    override fun fetchProductCategory(
+        shopId: String,
+        result: (ArrayList<ProductCategory>) -> Unit
+    ) {
+        GlobalScope.launch {
+            val list = arrayListOf<ProductCategory>()
+            val category = db.collection(SHOP).document(shopId)
+                .collection(PRODUCT).get().await().toObjects(
+                    ProductCategory::class.java
+                )
+            withContext(Dispatchers.Main) {
+                for (i in category) {
+                    list.add(ProductCategory(i.id, i.category, i.url))
+                }
+                result.invoke(list)
+            }
+        }
     }
 
 

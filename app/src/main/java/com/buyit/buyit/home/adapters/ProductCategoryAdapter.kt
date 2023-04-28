@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.buyit.buyit.databinding.ListProductCategoryBinding
+import com.buyit.buyit.home.models.ProductCategory
 
-class ProductCategoryAdapter(val list: ArrayList<String>) :
+class ProductCategoryAdapter(val list: ArrayList<ProductCategory>) :
     RecyclerView.Adapter<ProductCategoryAdapter.ViewHolder>() {
     class ViewHolder(val binding: ListProductCategoryBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -17,10 +18,10 @@ class ProductCategoryAdapter(val list: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = list[0]
+        val data = list[position]
         holder.apply {
             binding.apply {
-                tvProductCategory.text = data
+                tvProductCategory.text = data.category
             }
             itemView.setOnClickListener { }
         }

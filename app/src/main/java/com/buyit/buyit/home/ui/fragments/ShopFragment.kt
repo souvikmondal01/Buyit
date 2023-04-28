@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.buyit.buyit.R
 import com.buyit.buyit.databinding.FragmentShopBinding
 import com.buyit.buyit.home.adapters.ProductAdapter
+import com.buyit.buyit.home.adapters.ProductChildAdapter
+import com.buyit.buyit.home.adapters.ProductListener
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
 import com.buyit.buyit.home.viewModels.HomeViewModel
 import com.buyit.buyit.home.viewModels.HomeViewModelFactory
@@ -22,10 +24,12 @@ import com.buyit.buyit.utils.Constant.SHOP_ID
 import com.buyit.buyit.utils.Constant.SHOP_NAME
 import com.buyit.buyit.utils.Constant.SPF
 import com.buyit.buyit.utils.hide
+import com.buyit.buyit.utils.invisible
 import com.buyit.buyit.utils.setStatusBarColor
+import com.buyit.buyit.utils.show
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class ShopFragment : Fragment() {
+class ShopFragment : Fragment(), ProductListener {
     private var _binding: FragmentShopBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: HomeViewModel
@@ -69,7 +73,7 @@ class ShopFragment : Fragment() {
 
         viewModel.fetchProduct(shopId.toString())
         viewModel.productList.observe(viewLifecycleOwner) { list ->
-            adapter = ProductAdapter(requireContext(), list)
+            adapter = ProductAdapter(requireContext(), list, this)
             binding.recyclerView.setHasFixedSize(true)
             binding.recyclerView.layoutManager =
                 LinearLayoutManager(context)
@@ -83,5 +87,42 @@ class ShopFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onAddClick(holder: ProductChildAdapter.ViewHolder) {
+        viewModel.increment()
+        holder.binding.apply {
+            btnAdd.invisible()
+            btnPlus.show()
+            btnMinus.show()
+            tvCount.show()
+            tvCount.text = viewModel.count.toString()
+        }
+    }
+
+    override fun onPlusClick(holder: ProductChildAdapter.ViewHolder) {
+        viewModel.increment()
+        holder.apply {
+            binding.apply {
+                tvCount.text = viewModel.count.toString()
+            }
+        }
+    }
+
+    override fun onMinusClick(holder: ProductChildAdapter.ViewHolder) {
+        viewModel.decrement()
+        holder.apply {
+            binding.apply {
+                if (viewModel.count <= 0) {
+                    btnAdd.show()
+                    btnPlus.invisible()
+                    btnMinus.invisible()
+                    tvCount.invisible()
+                } else {
+                    tvCount.text = viewModel.count.toString()
+                }
+            }
+        }
+    }
+
 
 }

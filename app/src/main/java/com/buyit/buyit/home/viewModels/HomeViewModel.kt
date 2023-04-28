@@ -37,6 +37,9 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     private var _productList = MutableLiveData<ArrayList<ProductCategory>>()
     val productList get() = _productList
 
+    private var _productCategoryList = MutableLiveData<ArrayList<ProductCategory>>()
+    val productCategoryList get() = _productCategoryList
+
     fun getShopList() {
         val options = repository.getShopList({
             _shopList.value = it
@@ -73,6 +76,20 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     fun fetchProduct(shopId: String) = repository.fetchProduct(shopId) {
         _productList.value = it
     }
+
+    fun fetchProductCategory(shopId: String) = repository.fetchProductCategory(shopId) {
+        _productCategoryList.value = it
+    }
+
+
+    var count = 0
+    fun increment() {
+        count++
+    }
+    fun decrement() {
+        count--
+    }
+
 
 }
 

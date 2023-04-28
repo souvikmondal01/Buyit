@@ -10,10 +10,12 @@ import com.buyit.buyit.home.models.ProductCategory
 
 class ProductAdapter(
     val context: Context,
-    private val list: ArrayList<ProductCategory>
+    private val list: ArrayList<ProductCategory>, val listener2: ProductListener
 ) :
-    RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+    RecyclerView.Adapter<ProductAdapter.ViewHolder>(), ProductListener {
     class ViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root)
+
+    val listener: ProductListener = this
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ListProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -22,7 +24,7 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = list[position]
-        val adapter = ProductChildAdapter(data.product)
+        val adapter = ProductChildAdapter(data.product, this)
         holder.apply {
             binding.apply {
                 tvProductCategory.text = data.category
@@ -38,5 +40,17 @@ class ProductAdapter(
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    override fun onAddClick(holder: ProductChildAdapter.ViewHolder) {
+        listener2.onAddClick(holder)
+    }
+
+    override fun onPlusClick(holder: ProductChildAdapter.ViewHolder) {
+        listener2.onPlusClick(holder)
+    }
+
+    override fun onMinusClick(holder: ProductChildAdapter.ViewHolder) {
+        listener2.onMinusClick(holder)
     }
 }

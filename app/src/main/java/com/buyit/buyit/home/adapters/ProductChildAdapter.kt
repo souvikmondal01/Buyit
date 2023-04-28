@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.buyit.buyit.databinding.ListProductChildBinding
 import com.buyit.buyit.home.models.Product
 
-class ProductChildAdapter(private val list: ArrayList<Product>?) :
+class ProductChildAdapter(private val list: ArrayList<Product>?, val listener: ProductListener) :
     RecyclerView.Adapter<ProductChildAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ListProductChildBinding) : RecyclerView.ViewHolder(binding.root)
@@ -21,7 +21,21 @@ class ProductChildAdapter(private val list: ArrayList<Product>?) :
         val data = list?.get(position)
         holder.apply {
             if (data != null) {
-                binding.tvProductName.text = data.name
+                binding.apply {
+                    tvProductName.text = data.name
+                    tvProductPrice.text = "₹" + data.price
+                    tvProductQuantity.text = data.quantity + " " + data.unit
+
+                    btnAdd.setOnClickListener {
+                        listener.onAddClick(holder)
+                    }
+                    btnPlus.setOnClickListener {
+                        listener.onPlusClick(holder)
+                    }
+                    btnMinus.setOnClickListener {
+                        listener.onMinusClick(holder)
+                    }
+                }
             }
 
             itemView.setOnClickListener { }
@@ -32,4 +46,10 @@ class ProductChildAdapter(private val list: ArrayList<Product>?) :
     override fun getItemCount(): Int {
         return list!!.size
     }
+}
+
+interface ProductListener {
+    fun onAddClick(holder: ProductChildAdapter.ViewHolder)
+    fun onPlusClick(holder: ProductChildAdapter.ViewHolder)
+    fun onMinusClick(holder: ProductChildAdapter.ViewHolder)
 }

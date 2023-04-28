@@ -1,5 +1,6 @@
 package com.buyit.buyit.home.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.buyit.buyit.R
 import com.buyit.buyit.databinding.FragmentProductCategoryBinding
 import com.buyit.buyit.home.adapters.ProductCategoryAdapter
-import com.buyit.buyit.utils.Constant
+import com.buyit.buyit.home.repositories.HomeRepositoryImp
+import com.buyit.buyit.home.viewModels.HomeViewModel
+import com.buyit.buyit.home.viewModels.HomeViewModelFactory
+import com.buyit.buyit.utils.Constant.SHOP_ID
+import com.buyit.buyit.utils.Constant.SHOP_NAME
+import com.buyit.buyit.utils.Constant.SPF
 import com.buyit.buyit.utils.hide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -19,6 +26,8 @@ class ProductCategoryFragment : Fragment() {
     private var _binding: FragmentProductCategoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ProductCategoryAdapter
+    private lateinit var viewModel: HomeViewModel
+    private val factory = HomeViewModelFactory(HomeRepositoryImp())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -27,9 +36,11 @@ class ProductCategoryFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_product_category, container, false)
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
         navBar.hide()
+        viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -43,25 +54,20 @@ class ProductCategoryFragment : Fragment() {
         binding.cvCategory.setOnClickListener {}
 
         val sharedPreferences =
-            requireActivity().getSharedPreferences(Constant.SPF, Context.MODE_PRIVATE)
-        val shopName = sharedPreferences.getString(Constant.SHOP_NAME, "")
+            requireActivity().getSharedPreferences(SPF, Context.MODE_PRIVATE)
+        val shopName = sharedPreferences.getString(SHOP_NAME, "")
+        val shopId = sharedPreferences.getString(SHOP_ID, "")
         binding.tvShopName.text = shopName
 
-        val list = ArrayList<String>()
-        list.add("Category")
-        list.add("Category")
-        list.add("Category")
-        list.add("Category")
-        list.add("Category")
-        list.add("Category")
-        list.add("Category")
-        list.add("Category")
+        viewModel.fetchProductCategory(shopId.toString())
+        viewModel.productCategoryList.observe(viewLifecycleOwner) { list ->
+            adapter = ProductCategoryAdapter(list)
+            binding.recyclerView.setHasFixedSize(true)
+            binding.recyclerView.layoutManager = GridLayoutManager(context, 3)
+            binding.recyclerView.adapter = adapter
+            adapter.notifyDataSetChanged()
+        }
 
-
-        adapter = ProductCategoryAdapter(list)
-        binding.recyclerView.setHasFixedSize(true)
-        binding.recyclerView.layoutManager = GridLayoutManager(context, 3)
-        binding.recyclerView.adapter = adapter
     }
 
     override fun onDestroyView() {

@@ -28,6 +28,9 @@ fun Fragment.setStatusBarColor(color: Int) {
 fun View.hide() {
     visibility = View.GONE
 }
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
 
 fun View.show() {
     visibility = View.VISIBLE

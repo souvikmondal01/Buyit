@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="144dp"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -85,6 +86,7 @@
 
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add"
             android:layout_width="match_parent"
             android:layout_height="28dp"
             android:layout_marginHorizontal="24dp"
@@ -100,6 +102,55 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_mrp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_minus"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:fontFamily="@font/ssp_regular"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="1dp"
+            android:stateListAnimator="@null"
+            android:text="-"
+            android:textAllCaps="false"
+
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btn_add"
+            app:layout_constraintStart_toStartOf="@id/btn_add"
+            app:layout_constraintTop_toTopOf="@id/btn_add" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_plus"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:fontFamily="@font/ssp_regular"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="1dp"
+            android:stateListAnimator="@null"
+            android:text="+"
+            android:textAllCaps="false"
+
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btn_add"
+            app:layout_constraintEnd_toEndOf="@id/btn_add"
+            app:layout_constraintTop_toTopOf="@id/btn_add" />
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ssp_regular"
+            android:text="1"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btn_add"
+            app:layout_constraintEnd_toStartOf="@id/btn_plus"
+            app:layout_constraintStart_toEndOf="@id/btn_minus"
+            app:layout_constraintTop_toTopOf="@id/btn_add" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
