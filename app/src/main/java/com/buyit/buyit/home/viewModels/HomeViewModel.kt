@@ -86,8 +86,16 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     fun increment() {
         count++
     }
+
     fun decrement() {
         count--
+    }
+
+    fun reset() {
+        count = 0
+    }
+    fun setValue(num: Int) {
+        count = num
     }
 
 

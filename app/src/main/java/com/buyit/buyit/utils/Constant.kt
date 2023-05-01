@@ -32,5 +32,6 @@ object Constant {
     const val TOTAL_COUNT = "totalCount"
     const val UNIT = "unit"
     const val URL = "url"
+    const val ORDER_LIST = "order_list"
 
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +19,18 @@ import com.buyit.buyit.home.adapters.ProductAdapter
 import com.buyit.buyit.home.adapters.ProductAdapterListener
 import com.buyit.buyit.home.adapters.ProductChildAdapter
 import com.buyit.buyit.home.adapters.ProductListener
+import com.buyit.buyit.home.models.Product
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
 import com.buyit.buyit.home.viewModels.HomeViewModel
 import com.buyit.buyit.home.viewModels.HomeViewModelFactory
+import com.buyit.buyit.utils.CommonUtils
+import com.buyit.buyit.utils.Constant
+import com.buyit.buyit.utils.Constant.PRODUCT
+import com.buyit.buyit.utils.Constant.QUANTITY
 import com.buyit.buyit.utils.Constant.SHOP_ID
 import com.buyit.buyit.utils.Constant.SHOP_NAME
 import com.buyit.buyit.utils.Constant.SPF
+import com.buyit.buyit.utils.Constant.STATUS
 import com.buyit.buyit.utils.hide
 import com.buyit.buyit.utils.invisible
 import com.buyit.buyit.utils.setStatusBarColor
@@ -89,39 +96,139 @@ class ShopFragment : Fragment(), ProductListener, ProductAdapterListener {
         _binding = null
     }
 
-    override fun onAddClick(holder: ProductChildAdapter.ViewHolder) {
-        viewModel.increment()
-        holder.binding.apply {
-            btnAdd.invisible()
-            btnPlus.show()
-            btnMinus.show()
-            tvCount.show()
-            tvCount.text = viewModel.count.toString()
-        }
-    }
+    @SuppressLint("SetTextI18n")
+    override fun productClicks(holder: ProductChildAdapter.ViewHolder, data: Product) {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences(SPF, Context.MODE_PRIVATE)
+        val shopName = sharedPreferences.getString(SHOP_NAME, "")
+        val shopId = sharedPreferences.getString(SHOP_ID, "")
 
-    override fun onPlusClick(holder: ProductChildAdapter.ViewHolder) {
-        viewModel.increment()
-        holder.apply {
-            binding.apply {
-                tvCount.text = viewModel.count.toString()
-            }
-        }
-    }
-
-    override fun onMinusClick(holder: ProductChildAdapter.ViewHolder) {
-        viewModel.decrement()
-        holder.apply {
-            binding.apply {
-                if (viewModel.count <= 0) {
-                    btnAdd.show()
-                    btnPlus.invisible()
-                    btnMinus.invisible()
-                    tvCount.invisible()
+        CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+            .collection(Constant.USER).document(viewModel.id)
+            .collection(Constant.ORDER_LIST)
+            .document(shopId.toString()).collection(PRODUCT).document(data.id.toString()).get()
+            .addOnSuccessListener { document ->
+                if (document.data != null) {
+                    holder.binding.apply {
+                        btnAdd.invisible()
+                        btnPlus.show()
+                        btnMinus.show()
+                        tvCount.show()
+                        tvCount.text = document.data!![QUANTITY].toString()
+//                        viewModel.setValue(document.data!![QUANTITY].toString().toInt())
+                    }
                 } else {
-                    tvCount.text = viewModel.count.toString()
+                    Log.d("LOG", "No such document")
                 }
             }
+
+        holder.apply {
+            binding.apply {
+                tvProductName.text = data.name
+                tvProductPrice.text = "₹${data.price}"
+                tvProductQuantity.text = data.quantity + " " + data.unit
+
+                btnAdd.setOnClickListener {
+                    viewModel.reset()
+                    viewModel.increment()
+                    holder.binding.apply {
+                        btnAdd.invisible()
+                        btnPlus.show()
+                        btnMinus.show()
+                        tvCount.show()
+                        tvCount.text = viewModel.count.toString()
+                    }
+
+                    val dbRef = CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+                        .collection(Constant.USER).document(viewModel.id)
+                        .collection(Constant.ORDER_LIST)
+                        .document(shopId.toString())
+                    dbRef.collection(PRODUCT).document(data.id.toString())
+                        .set(Product(data.id, data.name, data.price, viewModel.count.toString()))
+                    dbRef.set(hashMapOf(SHOP_NAME to shopName, STATUS to "added"))
+                }
+
+                btnPlus.setOnClickListener {
+
+                    CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+                        .collection(Constant.USER).document(viewModel.id)
+                        .collection(Constant.ORDER_LIST)
+                        .document(shopId.toString()).collection(PRODUCT)
+                        .document(data.id.toString()).get()
+                        .addOnSuccessListener { document ->
+                            if (document.data != null) {
+                                viewModel.setValue(document.data!![QUANTITY].toString().toInt())
+                                viewModel.increment()
+                                holder.apply {
+                                    binding.apply {
+                                        tvCount.text = viewModel.count.toString()
+                                    }
+                                }
+                                CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+                                    .collection(Constant.USER).document(viewModel.id)
+                                    .collection(Constant.ORDER_LIST)
+                                    .document(shopId.toString()).collection(PRODUCT)
+                                    .document(data.id.toString())
+                                    .update(QUANTITY, viewModel.count.toString())
+                            } else {
+                                Log.d("LOG", "No such document")
+                            }
+                        }
+
+                }
+
+                btnMinus.setOnClickListener {
+                    CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+                        .collection(Constant.USER).document(viewModel.id)
+                        .collection(Constant.ORDER_LIST)
+                        .document(shopId.toString()).collection(PRODUCT)
+                        .document(data.id.toString()).get()
+                        .addOnSuccessListener { document ->
+                            if (document.data != null) {
+                                viewModel.setValue(document.data!![QUANTITY].toString().toInt())
+
+
+
+                                viewModel.decrement()
+                                holder.apply {
+                                    binding.apply {
+                                        if (viewModel.count <= 0) {
+                                            btnAdd.show()
+                                            btnPlus.invisible()
+                                            btnMinus.invisible()
+                                            tvCount.invisible()
+                                        } else {
+                                            tvCount.text = viewModel.count.toString()
+                                        }
+                                    }
+                                }
+
+                                CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+                                    .collection(Constant.USER).document(viewModel.id)
+                                    .collection(Constant.ORDER_LIST)
+                                    .document(shopId.toString()).collection(PRODUCT)
+                                    .document(data.id.toString())
+                                    .update(QUANTITY, viewModel.count.toString())
+                                if (viewModel.count <= 0) {
+                                    CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+                                        .collection(Constant.USER).document(viewModel.id)
+                                        .collection(Constant.ORDER_LIST)
+                                        .document(shopId.toString()).collection(PRODUCT)
+                                        .document(data.id.toString()).delete()
+                                }
+
+
+
+                            } else {
+                                Log.d("LOG", "No such document")
+                            }
+                        }
+
+
+                }
+            }
+
+            itemView.setOnClickListener { }
         }
     }
 
@@ -131,3 +238,24 @@ class ShopFragment : Fragment(), ProductListener, ProductAdapterListener {
 
 
 }
+
+
+/*
+order_list(col)-----shop_id(doc)-----user_id1(col)-----random1(doc)----Product1
+                                                  -----random2(doc)----Product2
+                                    -(user_info)
+
+                                -----user_id2(col)-----random1(doc)----Product1
+                                                  -----random2(doc)----Product2
+
+
+Product--
+--id
+--name
+--price
+--quantity
+--itemCount
+--status(added/placed/delivered)
+--date
+
+*/

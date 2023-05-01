@@ -19,27 +19,8 @@ class ProductChildAdapter(private val list: ArrayList<Product>?, val listener: P
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = list?.get(position)
-        holder.apply {
-            if (data != null) {
-                binding.apply {
-                    tvProductName.text = data.name
-                    tvProductPrice.text = "₹" + data.price
-                    tvProductQuantity.text = data.quantity + " " + data.unit
+        listener.productClicks(holder, data!!)
 
-                    btnAdd.setOnClickListener {
-                        listener.onAddClick(holder)
-                    }
-                    btnPlus.setOnClickListener {
-                        listener.onPlusClick(holder)
-                    }
-                    btnMinus.setOnClickListener {
-                        listener.onMinusClick(holder)
-                    }
-                }
-            }
-
-            itemView.setOnClickListener { }
-        }
 
     }
 
@@ -49,7 +30,5 @@ class ProductChildAdapter(private val list: ArrayList<Product>?, val listener: P
 }
 
 interface ProductListener {
-    fun onAddClick(holder: ProductChildAdapter.ViewHolder)
-    fun onPlusClick(holder: ProductChildAdapter.ViewHolder)
-    fun onMinusClick(holder: ProductChildAdapter.ViewHolder)
+    fun productClicks(holder: ProductChildAdapter.ViewHolder, data: Product)
 }

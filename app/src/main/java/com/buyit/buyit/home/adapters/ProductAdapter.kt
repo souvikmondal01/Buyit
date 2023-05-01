@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.buyit.buyit.databinding.ListProductBinding
+import com.buyit.buyit.home.models.Product
 import com.buyit.buyit.home.models.ProductCategory
 
 class ProductAdapter(
@@ -47,16 +48,8 @@ class ProductAdapter(
         return list.size
     }
 
-    override fun onAddClick(holder: ProductChildAdapter.ViewHolder) {
-        listener2.onAddClick(holder)
-    }
-
-    override fun onPlusClick(holder: ProductChildAdapter.ViewHolder) {
-        listener2.onPlusClick(holder)
-    }
-
-    override fun onMinusClick(holder: ProductChildAdapter.ViewHolder) {
-        listener2.onMinusClick(holder)
+    override fun productClicks(holder: ProductChildAdapter.ViewHolder, data: Product) {
+        listener2.productClicks(holder, data)
     }
 }
 
