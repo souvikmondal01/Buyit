@@ -9,10 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.buyit.buyit.databinding.FragmentProductByCategoryBinding
 import com.buyit.buyit.home.adapters.ProductByCategoryAdapter
-import com.buyit.buyit.home.models.Product
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
 import com.buyit.buyit.home.viewModels.HomeViewModel
 import com.buyit.buyit.home.viewModels.HomeViewModelFactory
+import com.buyit.buyit.utils.Constant.BUNDLE_KEY
+import com.buyit.buyit.utils.Constant.BUNDLE_KEY_ID
 
 class ProductByCategoryFragment : Fragment() {
     private var _binding: FragmentProductByCategoryBinding? = null
@@ -32,16 +33,25 @@ class ProductByCategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list: ArrayList<Product> = arrayListOf()
-        list.add(Product("id", "name1", "100", "500", "g"))
-        list.add(Product("id", "name2", "100", "500", "g"))
-        list.add(Product("id", "name3", "100", "500", "g"))
-        list.add(Product("id", "name4", "100", "500", "g"))
-        list.add(Product("id", "name5", "100", "500", "g"))
-        adapter = ProductByCategoryAdapter(list)
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter.notifyDataSetChanged()
+
+        binding.cvBackArrow.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+        val category = arguments?.getString(BUNDLE_KEY)
+        val shopId = arguments?.getString(BUNDLE_KEY_ID)
+        binding.tvCategoryName.text = category
+
+        viewModel.fetchProductByCategory(shopId.toString(), category.toString())
+
+        viewModel.productByCategoryList.observe(viewLifecycleOwner) {
+            adapter = ProductByCategoryAdapter(it)
+            binding.recyclerView.adapter = adapter
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            adapter.notifyDataSetChanged()
+        }
+
+
+
     }
 
     override fun onDestroyView() {

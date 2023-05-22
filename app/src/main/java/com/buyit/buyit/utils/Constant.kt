@@ -34,4 +34,8 @@ object Constant {
     const val URL = "url"
     const val ORDER_LIST = "order_list"
 
+    const val BUNDLE_KEY = "bundle_key"
+    const val BUNDLE_KEY_ID = "bundle_key_id"
+
+
 }

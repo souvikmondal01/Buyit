@@ -37,7 +37,7 @@ class ProductAdapter(
                 adapter.notifyDataSetChanged()
 
                 btnViewAll.setOnClickListener {
-                    listener3.onViewAllClick()
+                    listener3.onViewAllClick(data)
                 }
             }
         }
@@ -54,5 +54,5 @@ class ProductAdapter(
 }
 
 interface ProductAdapterListener {
-    fun onViewAllClick()
+    fun onViewAllClick(productCategory: ProductCategory)
 }

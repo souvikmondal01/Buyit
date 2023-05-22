@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,9 +16,11 @@ import com.buyit.buyit.R
 import com.buyit.buyit.databinding.FragmentProductCategoryBinding
 import com.buyit.buyit.home.adapters.ProductCategoryAdapter
 import com.buyit.buyit.home.adapters.ProductCategoryListener
+import com.buyit.buyit.home.models.ProductCategory
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
 import com.buyit.buyit.home.viewModels.HomeViewModel
 import com.buyit.buyit.home.viewModels.HomeViewModelFactory
+import com.buyit.buyit.utils.Constant
 import com.buyit.buyit.utils.Constant.SHOP_ID
 import com.buyit.buyit.utils.Constant.SHOP_NAME
 import com.buyit.buyit.utils.Constant.SPF
@@ -77,8 +80,19 @@ class ProductCategoryFragment : Fragment(), ProductCategoryListener {
         _binding = null
     }
 
-    override fun onCategoryClick() {
-        findNavController().navigate(R.id.action_shopCategoryFragment_to_productByCategoryFragment)
+    override fun onCategoryClick(productCategory: ProductCategory) {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences(SPF, Context.MODE_PRIVATE)
+        val shopId = sharedPreferences.getString(SHOP_ID, "")
+
+        val bundle = bundleOf(
+            Constant.BUNDLE_KEY to productCategory.category.toString(),
+            Constant.BUNDLE_KEY_ID to shopId
+        )
+        findNavController().navigate(
+            R.id.action_shopCategoryFragment_to_productByCategoryFragment,
+            bundle
+        )
     }
 
 }

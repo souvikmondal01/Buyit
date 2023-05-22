@@ -28,7 +28,7 @@ class ProductCategoryAdapter(
 
             }
             itemView.setOnClickListener {
-                listener.onCategoryClick()
+                listener.onCategoryClick(data)
             }
         }
     }
@@ -40,5 +40,5 @@ class ProductCategoryAdapter(
 }
 
 interface ProductCategoryListener {
-    fun onCategoryClick()
+    fun onCategoryClick(productCategory: ProductCategory)
 }

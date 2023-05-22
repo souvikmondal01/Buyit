@@ -4,6 +4,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.buyit.buyit.home.interfaces.HomeListener
+import com.buyit.buyit.home.models.Product
 import com.buyit.buyit.home.models.ProductCategory
 import com.buyit.buyit.home.models.Shop
 import com.buyit.buyit.home.repositories.HomeRepository
@@ -94,10 +95,19 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     fun reset() {
         count = 0
     }
+
     fun setValue(num: Int) {
         count = num
     }
 
+
+    private var _productByCategoryList = MutableLiveData<List<Product>>()
+    val productByCategoryList get() = _productByCategoryList
+
+    fun fetchProductByCategory(shopId: String, category: String) =
+        repository.fetchProductByCategory(shopId, category) {
+            _productByCategoryList.value = it
+        }
 
 }
 

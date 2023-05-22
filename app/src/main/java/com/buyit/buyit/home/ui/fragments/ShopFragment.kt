@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -20,11 +21,14 @@ import com.buyit.buyit.home.adapters.ProductAdapterListener
 import com.buyit.buyit.home.adapters.ProductChildAdapter
 import com.buyit.buyit.home.adapters.ProductListener
 import com.buyit.buyit.home.models.Product
+import com.buyit.buyit.home.models.ProductCategory
 import com.buyit.buyit.home.repositories.HomeRepositoryImp
 import com.buyit.buyit.home.viewModels.HomeViewModel
 import com.buyit.buyit.home.viewModels.HomeViewModelFactory
 import com.buyit.buyit.utils.CommonUtils
 import com.buyit.buyit.utils.Constant
+import com.buyit.buyit.utils.Constant.BUNDLE_KEY
+import com.buyit.buyit.utils.Constant.BUNDLE_KEY_ID
 import com.buyit.buyit.utils.Constant.PRODUCT
 import com.buyit.buyit.utils.Constant.QUANTITY
 import com.buyit.buyit.utils.Constant.SHOP_ID
@@ -145,7 +149,13 @@ class ShopFragment : Fragment(), ProductListener, ProductAdapterListener {
                         .document(shopId.toString())
                     dbRef.collection(PRODUCT).document(data.id.toString())
                         .set(Product(data.id, data.name, data.price, viewModel.count.toString()))
-                    dbRef.set(hashMapOf(SHOP_NAME to shopName, STATUS to "added"))
+                    dbRef.set(
+                        hashMapOf(
+                            SHOP_ID to shopId,
+                            SHOP_NAME to shopName,
+                            STATUS to "added"
+                        )
+                    )
                 }
 
                 btnPlus.setOnClickListener {
@@ -187,8 +197,6 @@ class ShopFragment : Fragment(), ProductListener, ProductAdapterListener {
                             if (document.data != null) {
                                 viewModel.setValue(document.data!![QUANTITY].toString().toInt())
 
-
-
                                 viewModel.decrement()
                                 holder.apply {
                                     binding.apply {
@@ -210,13 +218,16 @@ class ShopFragment : Fragment(), ProductListener, ProductAdapterListener {
                                     .document(data.id.toString())
                                     .update(QUANTITY, viewModel.count.toString())
                                 if (viewModel.count <= 0) {
-                                    CommonUtils.db.collection(Constant.USER).document(Constant.CUSTOMER)
+                                    val ref = CommonUtils.db.collection(Constant.USER)
+                                        .document(Constant.CUSTOMER)
                                         .collection(Constant.USER).document(viewModel.id)
                                         .collection(Constant.ORDER_LIST)
-                                        .document(shopId.toString()).collection(PRODUCT)
+                                        .document(shopId.toString())
+                                    ref.collection(PRODUCT)
                                         .document(data.id.toString()).delete()
-                                }
+                                    ref.delete()
 
+                                }
 
 
                             } else {
@@ -232,30 +243,17 @@ class ShopFragment : Fragment(), ProductListener, ProductAdapterListener {
         }
     }
 
-    override fun onViewAllClick() {
-        findNavController().navigate(R.id.action_shopFragment_to_productByCategoryFragment)
+    override fun onViewAllClick(productCategory: ProductCategory) {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences(SPF, Context.MODE_PRIVATE)
+        val shopId = sharedPreferences.getString(SHOP_ID, "")
+
+        val bundle = bundleOf(
+            BUNDLE_KEY to productCategory.category.toString(),
+            BUNDLE_KEY_ID to shopId
+        )
+        findNavController().navigate(R.id.action_shopFragment_to_productByCategoryFragment, bundle)
     }
 
 
 }
-
-
-/*
-order_list(col)-----shop_id(doc)-----user_id1(col)-----random1(doc)----Product1
-                                                  -----random2(doc)----Product2
-                                    -(user_info)
-
-                                -----user_id2(col)-----random1(doc)----Product1
-                                                  -----random2(doc)----Product2
-
-
-Product--
---id
---name
---price
---quantity
---itemCount
---status(added/placed/delivered)
---date
-
-*/

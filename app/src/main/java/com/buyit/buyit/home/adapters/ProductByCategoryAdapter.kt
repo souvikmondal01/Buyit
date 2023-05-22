@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.buyit.buyit.databinding.ListProductByCategoryBinding
 import com.buyit.buyit.home.models.Product
 
-class ProductByCategoryAdapter(val list: ArrayList<Product>) :
+class ProductByCategoryAdapter(val list: List<Product>) :
     RecyclerView.Adapter<ProductByCategoryAdapter.ViewHolder>() {
     class ViewHolder(val binding: ListProductByCategoryBinding) :
         RecyclerView.ViewHolder(binding.root)

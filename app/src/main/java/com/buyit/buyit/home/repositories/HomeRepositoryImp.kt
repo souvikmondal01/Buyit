@@ -65,16 +65,6 @@ class HomeRepositoryImp : HomeRepository {
     }
 
     override fun getLocation(id: String, result: (Location?) -> Unit) {
-//        GlobalScope.launch {
-//            val user =
-//                db.collection(Constant.USER).document(Constant.CUSTOMER).collection(Constant.USER)
-//                    .document(CommonUtils.auth.currentUser!!.uid).get().await()
-//                    .toObject(User::class.java)
-//            val location: Location? = user?.location
-//            withContext(Dispatchers.Main) {
-//                result.invoke(location)
-//            }
-//        }
 
         db.collection(Constant.USER).document(Constant.CUSTOMER).collection(Constant.USER)
             .document(id).addSnapshotListener { it, _ ->
@@ -138,6 +128,49 @@ class HomeRepositoryImp : HomeRepository {
                 }
                 result.invoke(list)
             }
+        }
+    }
+
+    override fun fetchProductByCategory(
+        shopId: String,
+        category: String,
+        result: (ArrayList<Product>) -> Unit
+    ) {
+        GlobalScope.launch {
+
+            val dbRef = db.collection(SHOP).document(shopId).collection(PRODUCT)
+            dbRef.get()
+                .addOnSuccessListener {
+                    for (i in it.documents) {
+                        if (i[CATEGORY] == category) {
+                            GlobalScope.launch {
+                                val products =
+                                    dbRef.document(i.id).collection(PRODUCT).get().await()
+                                        .toObjects(Product::class.java)
+
+                                withContext(Dispatchers.Main) {
+                                    val productList = arrayListOf<Product>()
+                                    for (product in products) {
+                                        productList.add(
+                                            Product(
+                                                product.id,
+                                                product.name,
+                                                product.price,
+                                                product.quantity,
+                                                product.unit,
+                                                product.totalCount,
+                                                product.url
+                                            )
+                                        )
+                                    }
+                                    result.invoke(productList)
+                                }
+                            }
+
+                        }
+                    }
+
+                }
         }
     }
 
