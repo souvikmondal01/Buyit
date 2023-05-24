@@ -11,5 +11,5 @@
 
 </br>
 
-<b> *** The project is still in progress and the development, implementation, or maintenance of these applications is currently underway ***</b>
+<b> *** The project is still in progress and the development of these applications is currently underway ***</b>
 
