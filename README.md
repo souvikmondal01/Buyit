@@ -13,3 +13,7 @@
 
 <b> *** The project is still in progress and the development of these applications is currently underway ***</b>
 
+## App Icon 📱
+<img src="https://github.com/mondal-souvik/git/assets/100204863/d9c6fc27-5988-48d8-8072-c8fc256da0f8" width="80px" hspace="40">
+
+## Some Screenshots
