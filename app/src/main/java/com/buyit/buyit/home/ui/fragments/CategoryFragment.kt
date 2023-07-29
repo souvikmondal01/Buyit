@@ -40,6 +40,7 @@ class CategoryFragment : Fragment(), CategoryAdapter.OnCliCkListener {
             activity?.onBackPressed()
         }
 
+
         return binding.root
     }
 

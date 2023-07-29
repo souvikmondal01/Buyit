@@ -109,6 +109,9 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
             _productByCategoryList.value = it
         }
 
+
+
+
 }
 
 
